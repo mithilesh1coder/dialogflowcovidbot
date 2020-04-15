@@ -1,0 +1,5 @@
+flask
+flask_ngrok
+requests
+gunicorn
+geopy
