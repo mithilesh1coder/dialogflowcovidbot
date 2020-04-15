@@ -123,7 +123,10 @@ def webhook():
     # terminating the session
     s.quit()
 
-    final_res = {"fulfillmentText": "Total cases in " + query_state + " is " + str(sum)}
+    final_res = (
+        {"fulfillmentText": "Total cases in " + query_state + " is " + str(sum)}
+        + "\nCovid 19 case details for your location has been sent to your mail id.Keep Indoors and be safe."
+    )
     return make_response(jsonify(final_res))
 
 
