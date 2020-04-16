@@ -93,12 +93,12 @@ def webhook():
     print(sum)
 
     # Send mail
-    s = smtplib.SMTP("smtp.mail.yahoo.com", 587)
+    s = smtplib.SMTP("smtp.gmail.com", 587)
     # start TLS for security
     s.starttls()
 
     # Authentication
-    s.login("covidbot@yahoo.com", os.environ["YAHOO_PASSWORD"])
+    s.login("covidbot19.info@gmail.com", os.environ["GMAIL_PASSWORD"])
 
     for k in district_data:
         dis = k["district"]
@@ -118,7 +118,7 @@ def webhook():
     )
 
     # sending the mail
-    s.sendmail("covidbot@yahoo.com", user_email, message)
+    s.sendmail("covidbot19.info@gmail.com", user_email, message)
 
     # terminating the session
     s.quit()
