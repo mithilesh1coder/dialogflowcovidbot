@@ -93,7 +93,7 @@ def webhook():
     print(sum)
 
     # Send mail
-    s = smtplib.SMTP("smtp.mail.yahoo", 587)
+    s = smtplib.SMTP("smtp.mail.yahoo.com", 587)
     # start TLS for security
     s.starttls()
 
