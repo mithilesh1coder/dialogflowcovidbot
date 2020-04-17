@@ -22,7 +22,7 @@ def webhook():
     # if request.get_json().get("queryResult").get("action") != "covidIntent":
     # return {}
 
-    MONGO_PASSWORD = os.environ("MONGO_PASSWORD")
+    MONGO_PASSWORD = os.environ["MONGO_PASSWORD"]
 
     client = MongoClient(
         "mongodb+srv://mithilesh:"
