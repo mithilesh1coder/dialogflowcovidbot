@@ -22,7 +22,9 @@ def webhook():
     # if request.get_json().get("queryResult").get("action") != "covidIntent":
     # return {}
 
-    client = MongoClient('mongodb+srv://mithilesh:mithilesh@cluster0-p74hr.mongodb.net/test?retryWrites=true&w=majority)
+    MONGO_PASSWORD = os.environ('MONGO_PASSWORD')
+
+    client = MongoClient('mongodb+srv://mithilesh:'+MONGO_PASSWORD+'@cluster0-p74hr.mongodb.net/test?retryWrites=true&w=majority)
     db = client.dialogflowcovid
 
     query_state = ""
