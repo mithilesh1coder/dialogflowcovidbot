@@ -5,6 +5,7 @@ import requests
 from geopy.geocoders import Nominatim
 import smtplib
 import os
+from email.message import EmailMessage
 
 app = Flask(__name__)
 run_with_ngrok(app)  # Start ngrok when app is run
@@ -93,12 +94,13 @@ def webhook():
     print(sum)
 
     # Send mail
-    s = smtplib.SMTP("smtp.gmail.com", 587)
+    #s = smtplib.SMTP("smtp.gmail.com", 587)
     # start TLS for security
-    s.starttls()
+    #s.starttls()
 
     # Authentication
-    s.login("covidbot19.info@gmail.com", os.environ["GMAIL_PASSWORD"])
+    
+    #s.login("covidbot19.info@gmail.com", os.environ["GMAIL_PASSWORD"])
 
     for k in district_data:
         dis = k["district"]
@@ -116,12 +118,28 @@ def webhook():
         + "\n"
         + concat_data
     )
+    
+    # Open the plain text file whose name is in textfile for reading.
+    
+    msg = EmailMessage()
+    msg.set_content(message)
 
-    # sending the mail
-    s.sendmail("covidbot19.info@gmail.com", user_email, message)
+    # me == the sender's email address
+    # you == the recipient's email address
+    msg['Subject'] = f'Covid case details:{query_state}'
+    msg['From'] = 'covidbot19.info@gmail.com'
+    msg['To'] = user_email
+
+    # Send the message via our own SMTP server.
+    s = smtplib.SMTP('smtp.gmail.com',587)
+    s.send_message(msg)
+    s.quit()
+
+        # sending the mail
+    #s.sendmail("covidbot19.info@gmail.com", user_email, message)
 
     # terminating the session
-    s.quit()
+    #s.quit()
 
     final_res = {
         "fulfillmentText": "Total cases in "
