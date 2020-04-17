@@ -5,7 +5,8 @@ import requests
 from geopy.geocoders import Nominatim
 import smtplib
 import os
-from email.message import EmailMessage
+from pymongo import MongoClient
+import json
 
 app = Flask(__name__)
 run_with_ngrok(app)  # Start ngrok when app is run
@@ -20,6 +21,9 @@ def home():
 def webhook():
     # if request.get_json().get("queryResult").get("action") != "covidIntent":
     # return {}
+
+    client = MongoClient('mongodb+srv://mithilesh:mithilesh@cluster0-p74hr.mongodb.net/test?retryWrites=true&w=majority)
+    db = client.dialogflowcovid
 
     query_state = ""
     district_data = dict()
@@ -94,13 +98,12 @@ def webhook():
     print(sum)
 
     # Send mail
-    #s = smtplib.SMTP("smtp.gmail.com", 587)
+    s = smtplib.SMTP("smtp.gmail.com", 587)
     # start TLS for security
-    #s.starttls()
+    s.starttls()
 
     # Authentication
-    
-    #s.login("covidbot19.info@gmail.com", os.environ["GMAIL_PASSWORD"])
+    s.login("covidbot19.info@gmail.com", os.environ["GMAIL_PASSWORD"])
 
     for k in district_data:
         dis = k["district"]
@@ -118,29 +121,14 @@ def webhook():
         + "\n"
         + concat_data
     )
-    
-    # Open the plain text file whose name is in textfile for reading.
-    
-    msg = EmailMessage()
-    msg.set_content(message)
 
-    # me == the sender's email address
-    # you == the recipient's email address
-    msg['Subject'] = f'Covid case details:{query_state}'
-    msg['From'] = 'covidbot19.info@gmail.com'
-    msg['To'] = user_email
-
-    # Send the message via our own SMTP server.
-    s = smtplib.SMTP('smtp.gmail.com',587)
-    s.send_message(msg)
-    s.quit()
-
-        # sending the mail
-    #s.sendmail("covidbot19.info@gmail.com", user_email, message)
+    # sending the mail
+    s.sendmail("covidbot19.info@gmail.com", user_email, message)
 
     # terminating the session
-    #s.quit()
+    s.quit()
 
+   
     final_res = {
         "fulfillmentText": "Total cases in "
         + query_state
@@ -148,6 +136,17 @@ def webhook():
         + str(sum)
         + "\nCovid 19 case details for your location has been sent to your mail id.Keep Indoors and be safe."
     }
+
+    conversation = {
+        "Name":user_name,
+        "Email":user_email,
+        "Mobile No":user_mobile,
+        "Pincode":user_pincode,
+        "Chat Response":final_res["fulfillmentText"]
+    }
+
+    result=db.chatdata.insert_one(json.dumps(conversation))
+
     return make_response(jsonify(final_res))
 
 
