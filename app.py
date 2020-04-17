@@ -22,9 +22,13 @@ def webhook():
     # if request.get_json().get("queryResult").get("action") != "covidIntent":
     # return {}
 
-    MONGO_PASSWORD = os.environ('MONGO_PASSWORD')
+    MONGO_PASSWORD = os.environ("MONGO_PASSWORD")
 
-    client = MongoClient('mongodb+srv://mithilesh:'+MONGO_PASSWORD+'@cluster0-p74hr.mongodb.net/test?retryWrites=true&w=majority)
+    client = MongoClient(
+        "mongodb+srv://mithilesh:"
+        + MONGO_PASSWORD
+        + "@cluster0-p74hr.mongodb.net/test?retryWrites=true&w=majority"
+    )
     db = client.dialogflowcovid
 
     query_state = ""
@@ -130,7 +134,6 @@ def webhook():
     # terminating the session
     s.quit()
 
-   
     final_res = {
         "fulfillmentText": "Total cases in "
         + query_state
@@ -140,14 +143,14 @@ def webhook():
     }
 
     conversation = {
-        "Name":user_name,
-        "Email":user_email,
-        "Mobile No":user_mobile,
-        "Pincode":user_pincode,
-        "Chat Response":final_res["fulfillmentText"]
+        "Name": user_name,
+        "Email": user_email,
+        "Mobile No": user_mobile,
+        "Pincode": user_pincode,
+        "Chat Response": final_res["fulfillmentText"],
     }
 
-    result=db.chatdata.insert_one(json.dumps(conversation))
+    result = db.chatdata.insert_one(json.dumps(conversation))
 
     return make_response(jsonify(final_res))
 
