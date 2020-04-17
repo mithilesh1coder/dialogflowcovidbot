@@ -150,7 +150,7 @@ def webhook():
         "Chat Response": final_res["fulfillmentText"],
     }
 
-    result = db.chatdata.insert_one(json.dumps(conversation))
+    result = db.chatdata.insert_one(conversation)
 
     return make_response(jsonify(final_res))
 
